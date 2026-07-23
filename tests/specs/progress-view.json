@@ -1,0 +1,20 @@
+[
+  {
+    "name": "View progress",
+    "steps": [
+      {
+        "expect": [
+          {
+            "method": "sendMessage",
+            "payload": {
+              "text": "See completed modules and notes"
+            }
+          }
+        ],
+        "send": {
+          "callback": "progress:view"
+        }
+      }
+    ]
+  }
+]
