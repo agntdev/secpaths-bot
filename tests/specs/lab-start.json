@@ -1,19 +1,17 @@
 [
   {
-    "name": "Start lab",
+    "name": "Start lab shows available labs",
     "steps": [
       {
+        "send": { "callback": "lab:start" },
         "expect": [
           {
-            "method": "sendMessage",
+            "method": "editMessageText",
             "payload": {
-              "text": "Begin a hands-on lab"
+              "text": "🔬 Labs — 0 completed"
             }
           }
-        ],
-        "send": {
-          "callback": "lab:start"
-        }
+        ]
       }
     ]
   }

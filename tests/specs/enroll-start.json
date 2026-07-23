@@ -1,19 +1,17 @@
 [
   {
-    "name": "Enroll in path",
+    "name": "Enroll in path shows path choices",
     "steps": [
       {
+        "send": { "callback": "enroll:start" },
         "expect": [
           {
-            "method": "sendMessage",
+            "method": "editMessageText",
             "payload": {
-              "text": "Begin a learning path"
+              "text": "Choose a learning path to enroll in:"
             }
           }
-        ],
-        "send": {
-          "callback": "enroll:start"
-        }
+        ]
       }
     ]
   }

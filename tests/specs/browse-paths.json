@@ -1,19 +1,17 @@
 [
   {
-    "name": "Browse learning paths",
+    "name": "Browse learning paths shows available paths",
     "steps": [
       {
+        "send": { "callback": "browse:paths" },
         "expect": [
           {
-            "method": "sendMessage",
+            "method": "editMessageText",
             "payload": {
-              "text": "View available learning tracks"
+              "text": "📚 Available learning paths:\n\n▸ Offensive Security\n  Red team techniques, exploitation, and penetration testing methodologies.\n\n▸ Defensive Security\n  Blue team operations, detection engineering, and incident response.\n\n▸ Security Research (Pro)\n  Vulnerability research, exploit development, and responsible disclosure."
             }
           }
-        ],
-        "send": {
-          "callback": "browse:paths"
-        }
+        ]
       }
     ]
   }

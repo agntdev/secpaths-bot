@@ -1,0 +1,50 @@
+[
+  {
+    "name": "Weekly digest shows resources",
+    "steps": [
+      {
+        "send": { "callback": "notif:digest" },
+        "expect": [
+          {
+            "method": "editMessageText",
+            "payload": {
+              "text": "📬 Weekly digest — new resources:\n\n▸ Nmap Documentation\n  Tags: tool, recon\n\n▸ OWASP Testing Guide\n  Tags: web, methodology\n\n▸ MITRE ATT&CK Framework\n  Tags: framework, defense\n\n▸ SANS Incident Response Poster\n  Tags: ir, reference"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Security alert shows bulletin",
+    "steps": [
+      {
+        "send": { "callback": "notif:alert" },
+        "expect": [
+          {
+            "method": "editMessageText",
+            "payload": {
+              "text": "🚨 Security bulletin\n\nNo urgent alerts at this time. Stay patched and monitor your logs."
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Path reminder shows enrolled paths",
+    "steps": [
+      {
+        "send": { "callback": "notif:reminder" },
+        "expect": [
+          {
+            "method": "editMessageText",
+            "payload": {
+              "text": "You aren't enrolled in any paths yet."
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

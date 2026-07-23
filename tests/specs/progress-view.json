@@ -1,19 +1,17 @@
 [
   {
-    "name": "View progress",
+    "name": "View progress shows empty state for new user",
     "steps": [
       {
+        "send": { "callback": "progress:view" },
         "expect": [
           {
-            "method": "sendMessage",
+            "method": "editMessageText",
             "payload": {
-              "text": "See completed modules and notes"
+              "text": "📊 No progress yet — you aren't enrolled in any paths.\n\nTap 📚 Browse paths to get started."
             }
           }
-        ],
-        "send": {
-          "callback": "progress:view"
-        }
+        ]
       }
     ]
   }
