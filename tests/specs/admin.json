@@ -1,19 +1,17 @@
 [
   {
-    "name": "/admin",
+    "name": "/admin asks for admin code",
     "steps": [
       {
+        "send": { "text": "/admin" },
         "expect": [
           {
             "method": "sendMessage",
             "payload": {
-              "text": "Open admin tools"
+              "text": "🔑 Enter admin code:"
             }
           }
-        ],
-        "send": {
-          "text": "/admin"
-        }
+        ]
       }
     ]
   }

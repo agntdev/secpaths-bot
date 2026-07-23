@@ -1,6 +1,6 @@
 [
   {
-    "name": "/help explains the bot in plain language",
+    "name": "Help explains the bot in plain language",
     "steps": [
       {
         "send": { "text": "/help" },

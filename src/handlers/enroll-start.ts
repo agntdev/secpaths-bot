@@ -1,17 +1,110 @@
 import { Composer } from "grammy";
+import type { Ctx } from "../bot.js";
+import {
+  inlineButton,
+  inlineKeyboard,
+  mainMenuKeyboard,
+} from "../toolkit/index.js";
+import {
+  getUserProfile,
+  getPathById,
+  getModulesForPath,
+  learningPaths,
+  pathIndex,
+} from "../data.js";
 
-// SCAFFOLD — generated from the bot blueprint BEFORE the agent runs.
-// Keep a LIVE registration (.command / .callbackQuery / …) so this feature is
-// never an empty stub. Replace the reply body with real logic + copy; if you
-// change the user-facing text, update tests/specs to match EXACTLY.
-// Do NOT rewrite src/bot.ts — buildBot() already auto-loads this module.
-// Menu: wire this into /start via registerMainMenuItem({ label: "Enroll in path", data: "enroll:start" }) if the toolkit exposes it.
+const composer = new Composer<Ctx>();
 
-const composer = new Composer();
+function getPathChoices() {
+  return pathIndex.map((id) => {
+    const p = learningPaths.get(id)!;
+    return inlineButton(p.title, `enroll:go:${p.id}`);
+  });
+}
 
 composer.callbackQuery("enroll:start", async (ctx) => {
   await ctx.answerCallbackQuery();
-  await ctx.reply("Begin a learning path");
+  const userId = ctx.from?.id;
+  const profile = userId ? getUserProfile(userId) : null;
+
+  if (profile && profile.enrolledPaths.length > 0) {
+    const enrolled = profile.enrolledPaths
+      .map((id) => getPathById(id))
+      .filter(Boolean)
+      .map((p) => `▸ ${p!.title}`)
+      .join("\n");
+    await ctx.editMessageText(
+      `📝 You're enrolled in:\n${enrolled}\n\nPick another path to enroll, or tap a path to continue.`,
+      {
+        reply_markup: inlineKeyboard([
+          ...getPathChoices().map((b) => [b]),
+          [inlineButton("⬅️ Back to menu", "menu:main")],
+        ]),
+      },
+    );
+    return;
+  }
+
+  await ctx.editMessageText("Choose a learning path to enroll in:", {
+    reply_markup: inlineKeyboard([
+      ...getPathChoices().map((b) => [b]),
+      [inlineButton("⬅️ Back to menu", "menu:main")],
+    ]),
+  });
+});
+
+composer.callbackQuery(/^enroll:go:(.+)$/, async (ctx) => {
+  await ctx.answerCallbackQuery();
+  const pathId = ctx.match![1];
+  const path = getPathById(pathId);
+  const userId = ctx.from?.id;
+
+  if (!path) {
+    await ctx.editMessageText("Path not found.", {
+      reply_markup: inlineKeyboard([[inlineButton("⬅️ Back to menu", "menu:main")]]),
+    });
+    return;
+  }
+
+  if (path.accessLevel === "pro") {
+    const profile = userId ? getUserProfile(userId) : null;
+    if (profile?.subscriptionStatus !== "pro") {
+      await ctx.editMessageText(
+        "🔒 This path requires a Pro subscription.\n\nUpgrade in Settings to access premium content.",
+        {
+          reply_markup: inlineKeyboard([
+            [inlineButton("⚙️ Settings", "settings:open")],
+            [inlineButton("⬅️ Back to menu", "menu:main")],
+          ]),
+        },
+      );
+      return;
+    }
+  }
+
+  if (userId) {
+    const profile = getUserProfile(userId);
+    if (!profile.enrolledPaths.includes(pathId)) {
+      profile.enrolledPaths.push(pathId);
+    }
+  }
+
+  const modules = getModulesForPath(pathId);
+  const firstMod = modules[0];
+
+  await ctx.editMessageText(
+    `✅ Enrolled in ${path.title}!\n\n` +
+      (firstMod
+        ? `First module: ${firstMod.title}\n${firstMod.content}`
+        : "No modules available yet."),
+    {
+      reply_markup: inlineKeyboard([
+        ...(firstMod ? [[inlineButton("🔬 Start lab", `lab:frommod:${firstMod.id}`)]] : []),
+        [inlineButton("📊 View progress", "progress:view")],
+        [inlineButton("⬅️ Back to menu", "menu:main")],
+      ]),
+    },
+  );
 });
 
 export default composer;

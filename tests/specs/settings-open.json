@@ -1,19 +1,17 @@
 [
   {
-    "name": "Settings",
+    "name": "Settings shows user preferences",
     "steps": [
       {
+        "send": { "callback": "settings:open" },
         "expect": [
           {
-            "method": "sendMessage",
+            "method": "editMessageText",
             "payload": {
-              "text": "Configure notifications and preferences"
+              "text": "⚙️ Your settings\n\nFocus area: Not set\nDelivery cadence: Weekly\nSubscription: Free\nEmail summaries: Off\nNotifications: On"
             }
           }
-        ],
-        "send": {
-          "callback": "settings:open"
-        }
+        ]
       }
     ]
   }
