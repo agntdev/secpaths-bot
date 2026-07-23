@@ -1,0 +1,20 @@
+[
+  {
+    "name": "Enroll in path",
+    "steps": [
+      {
+        "expect": [
+          {
+            "method": "sendMessage",
+            "payload": {
+              "text": "Begin a learning path"
+            }
+          }
+        ],
+        "send": {
+          "callback": "enroll:start"
+        }
+      }
+    ]
+  }
+]
